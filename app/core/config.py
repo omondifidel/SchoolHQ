@@ -30,4 +30,4 @@ class Settings(BaseSettings): #template that will execute when the app starts an
 # BACKGROUND JOBS
     REDIS_URL: str = "redis://localhost:6379/0"  # Redis URL for background jobs
 
-settings = Settings() #packages all the instructions into a single importable tool called settings 
+settings = Settings() #packages all the instructions into a single importable tool called settings  
