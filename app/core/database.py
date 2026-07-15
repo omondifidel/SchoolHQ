@@ -4,4 +4,10 @@
     This file is literally "dump plumbing code" , so its obvious where to look for the security critical part
 """
 
+from sqlalchemy.ext.asyncio import AsyncSesssion , create_async_engine , async_sessionmaker
 
+from app.core.config import settings
+
+create_async_engine = create_async_engine(settings.DATABASE_URL , echo=True , pool_pre_ping=True) #this is the engine that will be used to connect to the database
+
+SessionLocal = async_sessionmaker(engine , expire_on_commit=False ,class = AsyncSession) #this is the session factory that will be used to create sessions for the database
