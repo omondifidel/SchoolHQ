@@ -57,7 +57,7 @@ def create_access_token(user_id: UUID , school_id: str | None , role: str) -> st
     return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 
 #JWT Token Verification (Decoding the JWT)
-def verify_access_token(token: str) -> TokenPayload:
+def decode_access_token(token: str) -> TokenPayload:
     try:
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
         return TokenPayload(**payload)
