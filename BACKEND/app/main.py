@@ -16,7 +16,13 @@ app = FastAPI(
     description="Finance, academics, and communications platform for Kenyan schools.",
     version="0.1.0",
 )
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust to frontend URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(auth.router)
 app.include_router(finance.router)
 app.include_router(academics.router)
