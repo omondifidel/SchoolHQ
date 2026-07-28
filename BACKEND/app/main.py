@@ -27,6 +27,7 @@ app.include_router(auth.router)
 app.include_router(finance.router)
 app.include_router(academics.router)
 app.include_router(comms.router)
+app.include_router(students.router)
 
 
 @app.get("/health")
