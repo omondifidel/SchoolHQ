@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: schoolhq
+      POSTGRES_PASSWORD: schoolhq
+      POSTGRES_DB: schoolhq
+    ports:
+      - "5432:5432"
+    volumes:
+      - schoolhq_pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U schoolhq"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://schoolhq:schoolhq@db:5432/schoolhq
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: ["arq", "app.worker.WorkerSettings"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://schoolhq:schoolhq@db:5432/schoolhq
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/app
+
+volumes:
+  schoolhq_pgdata:
