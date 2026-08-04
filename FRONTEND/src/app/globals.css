@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+  }
+
+  /* Every number in this product reads like an instrument readout --
+     tabular figures so digits never jitter in width as values change. */
+  .num {
+    @apply font-mono;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Visible keyboard focus everywhere -- this is a finance product,
+     accessibility here isn't optional. */
+  :focus-visible {
+    outline: 2px solid theme("colors.gold");
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* The signature interaction, carried over from the fee leakage
+     calculator: a colored underline that draws itself under a key
+     figure. Apply alongside a color utility, e.g.:
+       <span className="figure-underline figure-underline-green"> */
+  .figure-underline {
+    position: relative;
+  }
+  .figure-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 2px;
+    transform-origin: left;
+    animation: underline-draw 0.5s ease forwards;
+  }
+  .figure-underline-gold::after { @apply bg-gold; }
+  .figure-underline-green::after { @apply bg-green; }
+  .figure-underline-red::after { @apply bg-red; }
+}
